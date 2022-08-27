@@ -54,3 +54,11 @@ Date:   Sat Aug 27 23:29:57 2022 +1200
 Then, if we want to know the balance of `95150b71976fbf282260f8005fb67082573e4cc0` at block `0`/`THE_HASH_OF_BLOCK_0`.
 - `git show THE_HASH_OF_BLOCK_0:balance/95150b71976fbf282260f8005fb67082573e4cc0`
 - `git show 0:balance/95150b71976fbf282260f8005fb67082573e4cc0`
+
+## some thinking
+
+Git is a great tools to manage snapshot. All balances on a block could be regard as a kind of snapshot. so we store the balnce, relate transactions or other things if needed in a snapshot. We can get a snapshot extremely fast(need confirm on a large data set), benefited by the nice algorithm of git.
+
+Create commits in parallel. If a high I/O method calling be used in getting block details, we can create multi-branchs for every parallel callback. Then base on the git hooks to merge/rebase all branchs without any gaps. THe git hooks also could make different repo for reading and writing.
+
+Using git repo as data repo has another benefit, there are a lot lib to interact with it. Even load it into memory to speed up.
