@@ -62,3 +62,53 @@ Git is a great tools to manage snapshot. All balances on a block could be regard
 Create commits in parallel. If a high I/O method calling be used in getting block details, we can create multi-branchs for every parallel callback. Then base on the git hooks to merge/rebase all branchs without any gaps. THe git hooks also could make different repo for reading and writing.
 
 Using git repo as data repo has another benefit, there are a lot lib to interact with it. Even load it into memory to speed up.
+
+### about performance
+
+objects database
+objects in pack file
+
+performance issues, solution: separate into 2 letters folder like https://github.com/rust-lang/crates.io-index
+30长度 实际40
+同一级，一次 O(n/2) n是 account 数量 204m?
+每个字符一级，30次 O((24+10)/2) : `30 * ( (24+10)/2 )` O(510) O(1), O(680)
+每两个词组一级,15次 O((24+10)*(24+10)/2) : `15 * ( (34*34)/2 )` O(8670) O(1)
+
+```shell
+moss@potato /tmp % cat cat.sh 
+#!/bin/bash
+for i in {1..680}
+do
+   cat /tmp/a > /dev/null
+done
+moss@potato /tmp % time bash cat.sh
+bash cat.sh  0.15s user 0.38s system 78% cpu 0.673 total
+```
+
+ext2
+Maximum number of files: 10^18
+
+other unknown limit of git or file system
+
+30
+
+names database
+
+reftables make name resolving performance like hash lookup
+https://github.com/google/reftable
+
+
+
+Scan (read 866k refs), by reference name lookup (single ref from 866k refs), and by SHA-1 lookup (refs with that SHA-1, from 866k refs):
+|format 	|cache  |scan 	|by name 	|by SHA-1|
+|-|-|-|-|-|
+|packed-refs |cold |402 ms |409,660.1 usec |412,535.8 usec|
+|packed-refs |hot ||6,844.6 usec |20,110.1 usec|
+|reftable |cold |112 ms |33.9 usec |323.2 usec|
+|reftable |hot ||20.2 usec |320.8 usec|
+
+multi-pack-index
+
+customize commit hash with block hash. x
+
+compare with just put in different folders named by blockheight
